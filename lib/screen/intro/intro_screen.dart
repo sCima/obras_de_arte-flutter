@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:obras_de_arte/routes.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -11,18 +12,18 @@ class IntroScreen extends StatefulWidget {
 class IntroScreenState extends State<IntroScreen> {
   final List<Map<String, String>> _pages = [
     {
-      'titulo': 'Palmeiras',
-      'subtitulo': 'É grande',
+      'title': 'Palmeiras',
+      'subtitle': 'É grande',
       'lottie': 'assets/lottie/intro1.json',
     },
     {
-      'titulo': 'Cortinas',
-      'subtitulo': 'É minúsculo kkkkkkkkkkkkk',
+      'title': 'Cortinas',
+      'subtitle': 'É minúsculo kkkkkkkkkkkkk',
       'lottie': 'assets/lottie/intro2.json',
     },
     {
-      'titulo': 'Palmeiras',
-      'subtitulo': 'Pai do Cortinas',
+      'title': 'Palmeiras',
+      'subtitle': 'Pai do Cortinas',
       'lottie': 'assets/lottie/intro3.json',
     },
   ];
@@ -54,7 +55,7 @@ class IntroScreenState extends State<IntroScreen> {
   int _currentPage = 0;
   bool _dontShowAgain = false;
 
- @override
+  @override
   Widget build(BuildContext context) {
     final isLastPage = _currentPage == _pages.length - 1;
     return Scaffold(
@@ -62,9 +63,61 @@ class IntroScreenState extends State<IntroScreen> {
         child: Column(
           children: [
             // Aqui será adicionado o conteudo da intro
-            Expanded(child: Placeholder()),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: _pages.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final page = _pages[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        Expanded(child: Lottie.asset(page['lottie']!)),
+                        Text(
+                          page['title']!,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          page['subtitle']!,
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
             // Aqui será adicionado o checkbox
-            if (isLastPage) Padding(padding: EdgeInsets.all(16)),
+            if (isLastPage)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: _dontShowAgain,
+                      onChanged: (val) {
+                        setState(() {
+                          _dontShowAgain = val ?? false;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: Text('Não mostrar essa introdução novamente.'),
+                    ),
+                  ],
+                ),
+              ),
             // Aqui serão adicionados os botões de navegação
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -73,7 +126,17 @@ class IntroScreenState extends State<IntroScreen> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [],
+                children: [
+                  // Botão Voltar à partir da tela 2
+                  if (_currentPage > 0)
+                    TextButton(onPressed: _onBack, child: Text('Voltar'))
+                  else
+                    SizedBox(width: 80), // espaço para alinhar
+                  TextButton(
+                    onPressed: _onNext,
+                    child: Text(isLastPage ? 'Concluir' : 'Avançar'),
+                  ),
+                ],
               ),
             ),
           ],
