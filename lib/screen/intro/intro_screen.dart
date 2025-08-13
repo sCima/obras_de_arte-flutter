@@ -54,9 +54,31 @@ class IntroScreenState extends State<IntroScreen> {
   int _currentPage = 0;
   bool _dontShowAgain = false;
 
-  @override
+ @override
   Widget build(BuildContext context) {
     final isLastPage = _currentPage == _pages.length - 1;
-    return const Placeholder();
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Aqui será adicionado o conteudo da intro
+            Expanded(child: Placeholder()),
+            // Aqui será adicionado o checkbox
+            if (isLastPage) Padding(padding: EdgeInsets.all(16)),
+            // Aqui serão adicionados os botões de navegação
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 12.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
